@@ -1,0 +1,138 @@
+{
+  "name": "deepseek",
+  "version": "0.1.0",
+  "apiVersion": 1,
+  "permissions": [
+    "net",
+    "db"
+  ],
+  "depends": {},
+  "conflicts": [],
+  "commands": [
+    {
+      "name": "ai",
+      "description": "和AI聊天",
+      "usage": "/ai 问题",
+      "scenes": [
+        "group"
+      ]
+    },
+    {
+      "name": "clear",
+      "aliases": [
+        "清空"
+      ],
+      "description": "清空我的聊天记忆",
+      "scenes": [
+        "group"
+      ]
+    },
+    {
+      "name": "aihelp",
+      "aliases": [
+        "聊天帮助"
+      ],
+      "description": "聊天使用说明",
+      "scenes": [
+        "group"
+      ]
+    }
+  ],
+  "regex": [
+    {
+      "pattern": "[\\s\\S]+",
+      "priority": -100,
+      "scenes": [
+        "group"
+      ]
+    }
+  ],
+  "events": [],
+  "buttons": [],
+  "cron": [
+    {
+      "name": "cleanup",
+      "cron": "0 0 * * *"
+    }
+  ],
+  "routes": [],
+  "hasMiddleware": false,
+  "services": [],
+  "durableObjects": [],
+  "displayName": "DeepSeek 群聊",
+  "description": "在QQ群 @机器人连续聊天，按群和用户保存上下文",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "apiKey": {
+        "type": "string",
+        "title": "DeepSeek API Key",
+        "writeOnly": true,
+        "description": "仅填官方 DeepSeek 密钥。请求固定发送到 `https://api.deepseek.com`。"
+      },
+      "model": {
+        "type": "string",
+        "title": "模型",
+        "enum": [
+          "deepseek-flash",
+          "deepseek-v4-pro"
+        ],
+        "default": "deepseek-flash"
+      },
+      "systemPrompt": {
+        "type": "string",
+        "title": "角色设定",
+        "format": "textarea",
+        "minLength": 1,
+        "maxLength": 4000,
+        "default": "你是QQ群里的AI聊天助手。用自然、友善的中文回答，除非对方要求其他语言。回答简明，尊重用户给出的上下文，不编造已完成的操作。你只有文字聊天能力，没有浏览器、外部工具或执行代码的能力。不要声称自己执行了外部操作。"
+      },
+      "historyTurns": {
+        "type": "integer",
+        "title": "保留对话轮数",
+        "minimum": 1,
+        "maximum": 10,
+        "default": 6
+      },
+      "memoryHours": {
+        "type": "integer",
+        "title": "上下文有效小时数",
+        "minimum": 1,
+        "maximum": 168,
+        "default": 24
+      },
+      "maxOutputTokens": {
+        "type": "integer",
+        "title": "每次最多生成 Token",
+        "minimum": 64,
+        "maximum": 1200,
+        "default": 600
+      },
+      "dailyRequests": {
+        "type": "integer",
+        "title": "全机器人每日最多调用次数（UTC重置）",
+        "minimum": 1,
+        "maximum": 1000,
+        "default": 100
+      }
+    },
+    "required": [
+      "apiKey",
+      "model",
+      "systemPrompt",
+      "historyTurns",
+      "memoryHours",
+      "maxOutputTokens",
+      "dailyRequests"
+    ]
+  },
+  "defaultConfig": {
+    "apiKey": "",
+    "model": "deepseek-flash",
+    "systemPrompt": "你是QQ群里的AI聊天助手。用自然、友善的中文回答，除非对方要求其他语言。回答简明，尊重用户给出的上下文，不编造已完成的操作。你只有文字聊天能力，没有浏览器、外部工具或执行代码的能力。不要声称自己执行了外部操作。",
+    "historyTurns": 6,
+    "memoryHours": 24,
+    "maxOutputTokens": 600,
+    "dailyRequests": 100
+  }
+}
