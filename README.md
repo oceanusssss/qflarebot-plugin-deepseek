@@ -2,6 +2,8 @@
 
 第一版目标：群成员直接 `@机器人 你好`，即可连续聊天。上下文按“机器人 + 群 + 用户”分别保存到 Cloudflare D1；换 Worker 实例仍保留。它目前提供文字聊天与上下文能力。
 
+本项目使用 GitHub 账号 `oceanusssss`：[框架部署仓库](https://github.com/oceanusssss/QFlareBot)、[本插件仓库](https://github.com/oceanusssss/qflarebot-plugin-deepseek)。在 QFlareBot 面板安装插件时，填写本插件仓库链接即可。
+
 ## 已实现
 
 - 直接 @ 提问，或 `@机器人 /ai 问题`。
