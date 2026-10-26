@@ -43,7 +43,7 @@ describe('QQ group conversational agent', () => {
     const body = JSON.parse(init!.body as string)
     expect(body).toMatchObject({ model: 'deepseek-flash', thinking: { type: 'disabled' }, max_tokens: 600, stream: false })
     expect(body.messages).toEqual([{ role: 'system', content: config.systemPrompt }, { role: 'user', content: '你好' }])
-    expect(init!.redirect).toBe('error')
+    expect(init!.redirect).toBe('manual')
     expect(init!.body).not.toContain('alice')
     expect(init!.body).not.toContain('group-a')
   })
@@ -129,6 +129,19 @@ describe('QQ group conversational agent', () => {
     expect(JSON.stringify(result.replies)).not.toContain('test-key-do-not-log')
     expect(sqlite.prepare('SELECT history, locked_until FROM p_deepseek_conversations').get()).toMatchObject({ history: '[]', locked_until: 0 })
     expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('refuses provider redirects without forwarding credentials or saving a reply', async () => {
+    vi.stubGlobal('fetch', vi.fn(async (_url, init: RequestInit) => {
+      if (init.redirect === 'error') throw new TypeError('Workers does not support this redirect mode')
+      expect(init.redirect).toBe('manual')
+      return new Response(null, { status: 307, headers: { Location: 'https://other-origin.invalid/' } })
+    }))
+    const result = await message()
+    expect(result.replies[0]).toContain('暂时不可用')
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(JSON.stringify(result.replies)).not.toContain('test-key-do-not-log')
+    expect(sqlite.prepare('SELECT history FROM p_deepseek_conversations').get()).toMatchObject({ history: '[]' })
   })
 
   it('aborts at 20 seconds and releases the conversation lock', async () => {

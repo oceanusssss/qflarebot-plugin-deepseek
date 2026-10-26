@@ -88,4 +88,4 @@ npm run sync
 
 上下文原文存放在你自己的 Cloudflare D1，调用模型时会把当前问题、最近上下文和角色设定发给 DeepSeek；不会额外发送 QQ 用户 ID 或群 ID。QQ 发消息前需确保群成员了解机器人及其数据用途。
 
-本地已通过 TypeScript 类型检查、构建和 14 项测试。测试使用 SDK 会话替身、真实 SQLite 和模拟 DeepSeek 响应；没有伪称已经通过真实 QQ/Cloudflare/DeepSeek 联调。
+本地已通过 TypeScript 类型检查、构建和 15 项测试。测试使用 SDK 会话替身、真实 SQLite 和模拟 DeepSeek 响应；没有伪称已经通过真实 QQ/Cloudflare/DeepSeek 联调。请求使用 Workers 支持的 `redirect: manual`，遇到重定向会拒绝继续，避免凭证被转发到其他地址。

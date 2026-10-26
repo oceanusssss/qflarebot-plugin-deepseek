@@ -1,6 +1,6 @@
 {
   "name": "qflarebot-plugin-deepseek",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "QQ群多轮聊天：DeepSeek、独立上下文、每日调用限额",
   "license": "MIT",
   "type": "module",

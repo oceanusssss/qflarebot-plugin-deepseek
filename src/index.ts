@@ -62,7 +62,8 @@ async function askApi(ctx: Context, history: Message[], question: string): Promi
   try {
     const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
-      redirect: 'error',
+      // Workers 不支持 redirect:error；manual 同样防止密钥跟随重定向。
+      redirect: 'manual',
       signal: controller.signal,
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${ctx.config.apiKey.trim()}` },
       body: JSON.stringify({
@@ -84,8 +85,10 @@ async function askApi(ctx: Context, history: Message[], question: string): Promi
     const text = content.trim()
     const answer = text.length > ANSWER_LIMIT ? `${text.slice(0, ANSWER_LIMIT)}\n（回答较长，已截断）` : text
     return { answer }
-  } catch {
+  } catch (error) {
     // 不回显原始异常、响应体或密钥，也不自动重试付费请求。
+    const kind = error instanceof Error && ['TypeError', 'SyntaxError', 'AbortError'].includes(error.name) ? error.name : 'Error'
+    ctx.logger.warn('DeepSeek 请求异常', { kind, timeout: controller.signal.aborted })
     return { error: controller.signal.aborted ? '这次回答超时了，请缩短问题后再试。' : '暂时无法连接 DeepSeek，请稍后再试。' }
   } finally { clearTimeout(timer) }
 }
